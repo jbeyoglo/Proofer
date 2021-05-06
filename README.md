@@ -1,2 +1,2 @@
 # Proofer
-Dough proofer project implemented with a Raspberry Zero + cammera, temp sensor, heater and not much more.
+Dough proofer project implemented with a Raspberry Zero + camera, temp sensor, heater and not much more.
