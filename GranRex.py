@@ -17,13 +17,19 @@ sensor = HTU21D(i2c)
 led4dig  = tm1637.TM1637(clk=6, dio=5)
 
 
+
+
 # loop forever
 while True:
+
 	currentTemp = sensor.temperature
 	intPart = int(currentTemp)
 	decPart = int((currentTemp-intPart) * 100)
 	print( intPart , decPart)
 	led4dig.numbers( intPart, decPart )
+
+	if 
+	
 
 	time.sleep(2)
 
