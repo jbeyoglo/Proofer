@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 import time
+from datetime import datetime, timedelta
 from enum import Enum
+import logging, sys
 from HeatingCycle import HeatingCycle
-
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 # Led Display - 4 digitsn I2C
 import tm1637
@@ -20,31 +22,34 @@ GPIO.setup(PIN_HEATER, GPIO.OUT)
 
 
 class State(Enum):
-	OFF = auto()
-	IDLE = auto()
-	HEATING = auto()
-	INERTIA = auto()
+	OFF = 0
+	IDLE = 1
+	HEATING = 2
+	INERTIA = 3
 
 
 led4dig  = tm1637.TM1637(clk=6, dio=5)
 sensor = HTU21()
 
-targetTemp = 17
+targetTemp = 22
 currentState = State.IDLE
-currentDateTime = datetime.datetime.now()
+currentDateTime = datetime.now()
 cycle = HeatingCycle()
 
 heaterStartedAt = None
 
+logging.info('Proofer starting at ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 # loop forever
 while True:
 
-	currentTemp = sensor.temperature
+	currentTemp = sensor.read_temperature()
 	intPart = int(currentTemp)
 	decPart = int((currentTemp-intPart) * 100)
-	print( intPart , decPart)
 	led4dig.numbers( intPart, decPart )
 
+	logging.debug('Current temp %6.2f', currentTemp)
+	logging.debug('State: ' + currentState.name)
 
 	if currentState == State.OFF:
 		#make sure the heater and fan are off
@@ -65,12 +70,11 @@ while True:
 			currentState = State.INERTIA
 
 	elif currentState == State.INERTIA:
-		
+		if( cycle.isFinished(currentTemp) ):
+			currentState = State.IDLE
 
 
-	#if heaterStartedAt is None && currentTemp < targetTemp:
-
-
-	
-	time.sleep(0.1)
+	logging.debug('Final state: ' + currentState.name)
+	logging.debug('========================')
+	time.sleep(0.5)
 
