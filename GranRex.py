@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import time
 from datetime import datetime, timedelta
 from enum import Enum
@@ -12,13 +13,25 @@ import tm1637
 # Temperature sensor
 from htu21 import HTU21 
 
+
 # GPIO
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 PIN_FAN = 23
 PIN_HEATER = 24
+GPIO.setwarnings(False)
 GPIO.setup(PIN_FAN, GPIO.OUT)
 GPIO.setup(PIN_HEATER, GPIO.OUT)
+
+PIN_SWITCH = 25
+GPIO.setup(PIN_SWITCH, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+def my_callback(PIN_SWITCH):
+	print('***********************************')
+	print('BOTONAZOOOO')
+	print('***********************************')
+
+GPIO.add_event_detect(PIN_SWITCH, GPIO.RISING, callback=my_callback, bouncetime=400)
 
 
 class State(Enum):
@@ -31,14 +44,13 @@ class State(Enum):
 led4dig  = tm1637.TM1637(clk=6, dio=5)
 sensor = HTU21()
 
-targetTemp = 22
+targetTemp = 27
 currentState = State.IDLE
-currentDateTime = datetime.now()
 cycle = HeatingCycle()
 
 heaterStartedAt = None
 
-logging.info('Proofer starting at ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+logging.info('Proofer starting at ' + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 # loop forever
 while True:
@@ -77,4 +89,5 @@ while True:
 	logging.debug('Final state: ' + currentState.name)
 	logging.debug('========================')
 	time.sleep(0.5)
+
 
