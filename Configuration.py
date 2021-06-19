@@ -1,9 +1,11 @@
 
 camera = {
-    "resX": 1280,
-    "resY": 720,
+    "resX": 1920,
+    "resY": 1080,
+#    "resX": 1280,
+#    "resY": 720,
     "secondsToFocus": 2,
-    "fontSize": "my secret password"
+    "path": "./Pictures"
 }
 
 notification = {
@@ -11,5 +13,6 @@ notification = {
 }
 
 proofer = {
-    "initialTargetTemperature": 28
+    "initialTargetTemperature": 26,
+    "notificationFrequency": 20
 }

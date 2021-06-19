@@ -8,7 +8,7 @@ class HeatingCycle:
 
 	__startingTemp: float
 	__trackTemp: float 
-	__minReductionTrack: float = 0.1
+	__minReductionTrack: float = 0.05
 
 
 	def __init__(self, duration = 10):
